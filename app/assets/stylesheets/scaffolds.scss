@@ -4,6 +4,15 @@ body {
   font-family: verdana, arial, helvetica, sans-serif;
   font-size: 13px;
   line-height: 18px;
+  th, td {
+    margin-right: 10px;
+    border: {
+      right: 10px solid #fff;
+      bottom: 10px solid #fff;
+      left-width: 0px;
+      top-width: 0px; 
+    }
+  }
 }
 
 p, ol, ul, td {
@@ -20,6 +29,7 @@ pre {
 
 a {
   color: #000;
+  margin-right: 10px;
 
   &:visited {
     color: #666;
@@ -27,7 +37,7 @@ a {
 
   &:hover {
     color: #fff;
-    background-color: #000;
+    background-color: #ddd;
   }
 }
 
@@ -36,6 +46,8 @@ div {
     margin-bottom: 10px;
   }
 }
+
+
 
 #notice {
   color: green;

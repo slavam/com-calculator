@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :tariffs
+  resources :categories
   resources :accounts
   delete '/logout', to: 'sessions#destroy'
   get '/auth/:provider/callback', to: 'sessions#create'

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  category_id: 
+  name: MyString
+  value: 9.99
+  start_date: 2016-09-16
+
+two:
+  category_id: 
+  name: MyString
+  value: 9.99
+  start_date: 2016-09-16

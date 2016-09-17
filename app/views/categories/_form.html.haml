@@ -1,0 +1,29 @@
+= form_for(@category) do |f| 
+  - if @category.errors.any?
+    %div (id="error_explanation")
+    %h2= pluralize(@category.errors.count, "error") + "prohibited this category from being saved:"
+
+    %ul
+      - @category.errors.full_messages.each do |message| 
+        %li= message 
+
+  %div(class="field")
+  = f.label "Название" 
+  %br
+  = f.text_field :name 
+  %br
+  = f.label "Описание" 
+  %br
+  = f.text_field :description, :size => 100
+  %br
+  = f.label "Единица измерения" 
+  %br
+  = f.text_field :unit
+  %br
+  = f.label "По счетчику?" 
+  %br
+  = f.text_field :is_counter
+  %br
+  
+  %div(class="actions")
+  = f.submit("Сохранить")

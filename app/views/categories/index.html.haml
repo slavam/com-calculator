@@ -1,0 +1,25 @@
+%h1= "Список категорий"
+
+%table
+  %thead
+    %tr
+      %th= "Название "
+      %th= "Описание"
+      %th= "Единица измерения"
+      %th= "По счетчику?"
+      %th(colspan="3")
+
+  %tbody
+    - @categories.each do |category| 
+      %tr
+        %td= category.name 
+        %td= category.description 
+        %td= category.unit 
+        %td= category.is_counter? ? "Да" : "Нет"
+        %td= link_to 'Show', category
+        %td= link_to 'Edit', edit_category_path(category)
+        %td= link_to 'Destroy', category, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'Новая категория', new_category_path
