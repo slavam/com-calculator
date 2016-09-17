@@ -1,0 +1,29 @@
+= form_for(@tariff) do |f| 
+  - if @tariff.errors.any?
+    %div (id="error_explanation")
+    %h2= pluralize(@tariff.errors.count, "error") + "prohibited this tariff from being saved:"
+
+    %ul
+      - @tariff.errors.full_messages.each do |message| 
+        %li= message 
+
+  %div(class="field")
+  = f.label "Категория" 
+  %br
+  = collection_select(:tariff, :category_id, Category.all, :id, :name, {:promt => true})
+  %br
+  = f.label "Описание" 
+  %br
+  = f.text_field :name, :size => 100
+  %br
+  = f.label "Значение" 
+  %br
+  = f.text_field :value
+  %br
+  = f.label "Введен с" 
+  %br
+  = f.text_field :start_date
+  %br
+  
+  %div(class="actions")
+  = f.submit("Сохранить")

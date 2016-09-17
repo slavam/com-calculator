@@ -6,15 +6,17 @@
       %th= "Категория "
       %th= "Название"
       %th= "Значение"
+      %th= "Единица измерения"
       %th= "Введен с"
       %th(colspan="3")
 
   %tbody
     - @tariffs.each do |tariff| 
       %tr
-        %td= tariff.category_id 
+        %td= tariff.category.name
         %td= tariff.name 
-        %td= tariff.valur 
+        %td= tariff.value 
+        %td= tariff.category.unit
         %td= tariff.start_date
         %td= link_to 'Show', tariff
         %td= link_to 'Edit', edit_tariff_path(tariff)
