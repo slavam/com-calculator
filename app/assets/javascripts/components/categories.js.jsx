@@ -9,7 +9,7 @@ var Categories = React.createClass({
   }
 });
 
-var CategorytRow = React.createClass({
+var CategoryRow = React.createClass({
   render: function() {
     return (
       <tr>
@@ -26,7 +26,7 @@ var CategoryTable = React.createClass({
   render: function() {
     var rows = [];
     this.props.data.forEach(function(category) {
-      rows.push(<CategorytRow category={category} key={category.id} />);
+      rows.push(<CategoryRow category={category} key={category.id} />);
     }.bind(this));
     return (
       <table>
