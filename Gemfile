@@ -37,6 +37,8 @@ gem 'showdown-rails'
 
 gem 'autoprefixer-rails'
 
+# gem 'coffee-script-source', '1.10.0'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
