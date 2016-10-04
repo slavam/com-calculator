@@ -5,14 +5,12 @@ class TariffsController < ApplicationController
   # GET /tariffs.json
   def index
     @tariffs = Tariff.all.order(:category_id, :name)
-    # render component: 'Tariffs', props: { tariffs: @tariffs }
-    # @categories = Category.all.order(:name)
+    @categories = Category.all.order(:name)
   end
   
   def new
     @tariff = Tariff.new
   end
-  
   
   def create
     @tariff = Tariff.new(tariff_params)

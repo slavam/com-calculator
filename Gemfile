@@ -37,6 +37,9 @@ gem 'showdown-rails'
 
 gem 'autoprefixer-rails'
 
+# using CoffeeScript with JSX markup
+gem 'sprockets-coffee-react'
+
 # gem 'coffee-script-source', '1.10.0'
 
 # Use ActiveModel has_secure_password
