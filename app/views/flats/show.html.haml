@@ -1,0 +1,33 @@
+%h1 Характеристики жилья
+.content
+  %table.card
+    %tr
+      %th Адрес:
+      %td= @flat.address
+    %tr
+      %th Плательщик
+    %tr
+      %th Фамилия:
+      %td= @flat.payer_lastname
+    %tr
+      %th Имя:
+      %td= @flat.payer_firstname
+    %tr
+      %th Отчество:
+      %td= @flat.payer_middlename
+    %tr
+      %th Общая площадь:
+      %td= @flat.total_area
+    %tr
+      %th Отапливаемая площадь:
+      %td= @flat.heated_area
+    %tr
+      %th Количество зарегистрированных:
+      %td= @flat.residents_number
+
+  %br
+
+  .actions
+    = link_to 'Edit', edit_flat_path(@flat)
+    = link_to 'Delete', flat_path(@flat), :method => :delete, :confirm => "Do you ready to delete flat?"
+    = link_to 'Back', flats_path 

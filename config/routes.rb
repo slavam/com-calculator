@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :flats
   resources :tariffs
   resources :categories
   resources :accounts

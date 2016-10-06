@@ -1,0 +1,41 @@
+= form_for(@flat) do |f| 
+  - if @flat.errors.any?
+    %div (id="error_explanation")
+    %h2= pluralize(@flat.errors.count, "error") + "prohibited this flat from being saved:"
+
+    %ul
+      - @flat.errors.full_messages.each do |message| 
+        %li= message 
+
+  %div(class="field")
+  = f.label "Адрес" 
+  %br
+  = f.text_field :address, :size => 100
+  %br
+  = f.label "Фамилия" 
+  %br
+  = f.text_field :payer_lastname
+  %br
+  = f.label "Имя" 
+  %br
+  = f.text_field :payer_firstname
+  %br
+  = f.label "Отчество" 
+  %br
+  = f.text_field :payer_middlename
+  %br
+  = f.label "Общая площадь" 
+  %br
+  = f.text_field :total_area
+  %br
+  = f.label "Отапливаемая площадь" 
+  %br
+  = f.text_field :heated_area
+  %br
+  = f.label "Количество зарегистрированных" 
+  %br
+  = f.text_field :residents_number
+  %br
+  
+  %div(class="actions")
+  = f.submit("Сохранить")

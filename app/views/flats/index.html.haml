@@ -1,0 +1,21 @@
+%h1= "Жилье "+current_user.name
+
+%table
+  %thead
+    %tr
+      %th= "Плательщик"
+      %th= "Адрес"
+      %th(colspan="3")
+
+  %tbody
+    - @flats.each do |flat| 
+      %tr
+        %td= flat.payer_shortname
+        %td= flat.address
+        %td= link_to 'Show', flat
+        %td= link_to 'Edit', edit_flat_path(flat)
+        %td= link_to 'Destroy', flat, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'Новое жилье', new_flat_path

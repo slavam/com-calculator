@@ -25,12 +25,12 @@ R = React.DOM
             
 @SelectCategory = React.createClass      
   handleChange: ->
-    @props.myOnChange @refs.selctCategory.value
+    @props.myOnChange @refs.selectCategory.value
   render: ->
     R.select
       className: 'selectCat'
       defaultValue: 1
-      ref: 'selctCategory'
+      ref: 'selectCategory'
       onChange: @handleChange
       for category in @props.categories
         R.option
@@ -54,8 +54,7 @@ R = React.DOM
 
 @TariffRow = React.createClass
   render: ->
-    <tr>
-      <td>{@props.tariff.name}</td>
-      <td>{@props.tariff.value}</td>
-      <td>{@props.tariff.start_date}</td>
-    </tr>
+    R.tr null,
+      R.td null, @props.tariff.name
+      R.td null, @props.tariff.value
+      R.td null, @props.tariff.start_date
