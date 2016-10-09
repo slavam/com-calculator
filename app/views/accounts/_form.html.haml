@@ -1,0 +1,25 @@
+%h1= "Счет"
+.content
+  - form_for @activity do |form|
+    = form.error_messages
+    %table.card
+      %tr
+        %th= form.label :account
+        %td= collection_select(:activity, :account_id, Account.all, :id, :name, {:promt => true})
+      %tr
+        %th= form.label :project
+        %td= collection_select(:activity, :project_id, Project.all, :id, :name, {:promt => true})
+      %tr
+        %th= form.label :description
+        %td= form.text_area :description
+      %tr
+        %th= form.label :notes
+        %td= form.text_area :notes
+      %tr
+        %th= form.label :start_date
+        %td= form.datetime_select :start_date
+      %tr
+        %th= form.label :due_date
+        %td= form.datetime_select :due_date
+    %br
+    = submit_tag submit

@@ -1,4 +1,5 @@
 class Flat < ActiveRecord::Base
+  has_many :accounts
   before_save :default_values
   validates :address, presence: true, uniqueness: true
   validates :total_area, presence: true

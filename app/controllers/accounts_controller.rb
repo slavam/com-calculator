@@ -1,10 +1,11 @@
 class AccountsController < ApplicationController
   before_action :set_account, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_flat, only: [:index, :new, :show, :update, :destroy]
   # GET /accounts
   # GET /accounts.json
   def index
-    @accounts = Account.all
+    @accounts = @flat.accounts.order(:stop_date).reverse_order
+    # @accounts = Account.find(params[:flat_id]).order(:stop_date).reverse_order
   end
 
   # GET /accounts/1
@@ -69,6 +70,11 @@ class AccountsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def account_params
-      params.fetch(:account, {})
+      params.require(:account).permit(:start_date, :stop_date, :total, :user_id, :flat_id)
+      # params.fetch(:account, {})
+    end
+    
+    def set_flat
+      @flat = Flat.find(params[:flat_id])
     end
 end

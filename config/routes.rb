@@ -1,12 +1,15 @@
 Rails.application.routes.draw do
-  resources :flats
+  get 'flats/:flat_id/accounts', to: 'accounts#index'
+  resources :flats do
+    resources :accounts
+  end
   resources :tariffs
   resources :categories
-  resources :accounts
+  # resources :accounts
   delete '/logout', to: 'sessions#destroy'
   get '/auth/:provider/callback', to: 'sessions#create'
   get '/auth/failure', to: 'sessions#auth_failure'
-  root to: 'accounts#index'
+  root to: 'flats#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
