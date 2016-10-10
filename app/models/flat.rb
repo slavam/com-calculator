@@ -1,8 +1,10 @@
 class Flat < ActiveRecord::Base
   has_many :accounts
+  has_many :utilities
   before_save :default_values
   validates :address, presence: true, uniqueness: true
   validates :total_area, presence: true
+  # attr_accessor :payer_shortname
   
   def payer_fullname
     self.payer_lastname+' '+self.payer_firstname+' '+self.payer_middlename

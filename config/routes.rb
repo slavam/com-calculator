@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
+  # resources :utilities
   get 'flats/:flat_id/accounts', to: 'accounts#index'
   resources :flats do
     resources :accounts
+    resources :utilities
   end
   resources :tariffs
   resources :categories

@@ -28,6 +28,7 @@
   %br
 
   .actions
+    = link_to 'Услуги', new_flat_utility_path(@flat)
     = link_to 'Edit', edit_flat_path(@flat)
     = link_to 'Delete', flat_path(@flat), :method => :delete, :confirm => "Do you ready to delete flat?"
     = link_to 'Back', flats_path 

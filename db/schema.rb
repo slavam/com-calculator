@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161007132430) do
+ActiveRecord::Schema.define(version: 20161009112405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,8 +79,23 @@ ActiveRecord::Schema.define(version: 20161007132430) do
   add_index "users", ["provider"], name: "index_users_on_provider", using: :btree
   add_index "users", ["uid"], name: "index_users_on_uid", using: :btree
 
+  create_table "utilities", force: :cascade do |t|
+    t.integer  "flat_id"
+    t.integer  "category_id"
+    t.integer  "tariff_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "utilities", ["category_id"], name: "index_utilities_on_category_id", using: :btree
+  add_index "utilities", ["flat_id"], name: "index_utilities_on_flat_id", using: :btree
+  add_index "utilities", ["tariff_id"], name: "index_utilities_on_tariff_id", using: :btree
+
   add_foreign_key "accounts", "flats"
   add_foreign_key "accounts", "users"
   add_foreign_key "flats", "users"
   add_foreign_key "tariffs", "categories"
+  add_foreign_key "utilities", "categories"
+  add_foreign_key "utilities", "flats"
+  add_foreign_key "utilities", "tariffs"
 end
