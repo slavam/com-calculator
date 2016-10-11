@@ -2,9 +2,12 @@ R = React.DOM
 
 @FlatUtilities = React.createClass
   getInitialState: ->
-    category: 1
-#   handleCategoryChange: (value) ->
-#     @setState category: +value
+    utilities: @props.utilities
+  addUtility: (record) ->
+    utilities = @state.utilities.slice()
+    utilities.push record
+    @setState utilities: utilities
+
   render: -> 
     R.div 
       className: 'flat-utilities'
@@ -15,14 +18,14 @@ R = React.DOM
       R.p null, "Адрес: "+@props.flat.address
       R.p null, "Плательщик: "+@props.flat.payer_lastname
     
-      React.createElement RecordForm, categories: @props.categories, tariffs: @props.tariffs
+      React.createElement RecordForm, categories: @props.categories, tariffs: @props.tariffs, handleNewUtility: @addUtility
       # React.createElement SelectCategory, categories: @props.categories, myOnChange: @handleCategoryChange
 
       R.h2
         className: 'title'
         'Услуги'
         
-      React.createElement UtilityTable, utilities: @props.utilities #, category: @state.category
+      React.createElement UtilityTable, utilities: @state.utilities, categories: @props.categories, tariffs: @props.tariffs
 
 @UtilityTable = React.createClass
   render: ->
@@ -35,57 +38,83 @@ R = React.DOM
             R.th null, 'Счетчик'
         R.tbody null,
           for utility in @props.utilities
-            React.createElement UtilityRow, key: utility.id, utility: utility
+            React.createElement UtilityRow, key: utility.id, utility: utility, categories: @props.categories, tariffs: @props.tariffs
             
 @UtilityRow = React.createClass
   render: ->
+    category = (c for c in @props.categories when c.id is @props.utility.category_id)
+    tariff = (t for t in @props.tariffs when t.id is @props.utility.tariff_id)
     R.tr null,
-      R.td null, @props.utility.category.name
-      R.td null, @props.utility.tariff.value
-      R.td null, @props.utility.category.is_counter
+      R.td null, category[0].name
+      R.td null, tariff[0].value
+      R.td null, @props.utility.description_counter
       
 @RecordForm = React.createClass
   getInitialState: ->
-    category: 1
+    category_id: 1
+    tariff_id: 1
     tariffs: (tariff for tariff in @props.tariffs when tariff.category_id is 1)
+    description_counter: ''
+    start_value_counter: ''
   handleCategoryChange: (value) ->
-    @setState category: +value    
+    @setState category_id: +value    
     @setState tariffs: (tariff for tariff in @props.tariffs when tariff.category_id is +value)
   handleTariffChange: (value) ->
     @setState tariff_id: +value    
+  handleChange: (e) ->
+    name = e.target.name
+    @setState "#{ name }": e.target.value
   handleSubmit: (e) ->
     e.preventDefault()
-    $.post '', { record: @state }, (data) =>
-      @props.handleNewRecord data
+    $.post '', { utility: {category_id: @state.category_id, tariff_id: @state.tariff_id, description_counter: @state.description_counter, start_value_counter: @state.start_value_counter }}, (data) =>
+      @props.handleNewUtility data
       @setState @getInitialState()
     , 'JSON'
   render: ->
     R.form
       className: 'form-inline'
       onSubmit: @handleSubmit
-      R.div
-        className: 'form-group'
-        R.h4 null 
+      R.div null
+        # className: 'form-group'
+        R.h4 
+          className: 'form-control'
           "Категория: "
           React.createElement SelectCategory, categories: @props.categories, myOnChange: @handleCategoryChange
       R.br null
-      R.div
+      R.div 
         className: 'form-group'
-        R.h4 null 
+        R.h4 
+          className: 'form-control'
           "Тариф: "
           React.createElement SelectTariff, tariffs: @state.tariffs, myOnChange: @handleTariffChange
       R.br null
+      React.DOM.div
+        className: 'form-group'
+        R.h4 
+          className: 'form-control'
+          "Описание счетчика: "
+          React.DOM.input
+            type: 'text'
+            # className: 'form-control'
+            placeholder: 'Описание'
+            name: 'description_counter'
+            disabled: !(c for c in @props.categories when c.id is @state.category_id)[0].is_counter
+            value: @state.description_counter
+            onChange: @handleChange
+      R.br null
       R.div
         className: 'form-group'
-        React.DOM.input
-          type: 'number'
+        R.h4
           className: 'form-control'
-          placeholder: 'Amount'
-          name: 'amount'
-          disabled: !(c for c in @props.categories when c.id is @state.category)[0].is_counter
-            # !@props.categories.find(c => c.id == @state.category).is_counter
-          value: @state.amount
-          onChange: @handleChange
+          "Начальное показание счетчика: "
+          React.DOM.input
+            type: 'number'
+            # className: 'form-control'
+            placeholder: 'Значение'
+            name: 'start_value_counter'
+            disabled: !(c for c in @props.categories when c.id is @state.category_id)[0].is_counter
+            value: @state.start_value_counter
+            onChange: @handleChange
       R.br null
       R.button
         type: 'submit'

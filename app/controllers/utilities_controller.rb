@@ -1,5 +1,5 @@
 class UtilitiesController < ApplicationController
-  before_action :set_flat, only: [:new, :show, :edit, :update, :destroy]
+  before_action :set_flat, only: [:new, :create, :show, :edit, :update, :destroy]
   
   def new
     @utilities = @flat.utilities.order(:id)
@@ -9,6 +9,7 @@ class UtilitiesController < ApplicationController
   
   def create
     @utility = Utility.new(utility_params)
+    @utility.flat_id = @flat.id
 
     if @utility.save
       render json: @utility
@@ -23,7 +24,7 @@ private
     end
   
     def utility_params
-      params.require(:utility).permit(:flat_id, :category_id, :tariff_id)
+      params.require(:utility).permit(:flat_id, :category_id, :tariff_id, :description_counter, :start_value_counter)
     end
   
 end
