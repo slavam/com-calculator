@@ -1,9 +1,13 @@
 class UtilitiesController < ApplicationController
   before_action :set_flat, only: [:new, :create, :show, :edit, :update]
-  before_action :set_utility, only: [:show, :destroy]
+  before_action :set_utility, only: [:show, :edit, :update, :destroy]
   
   def index 
-    @utilities = Utility.all.order(:flat_id, :id)
+    if params[:flat_id]
+      @utilities = Utility.where(flat_id: params[:flat_id])
+    else
+      @utilities = Utility.all.order(:flat_id, :id)
+    end
   end
   
   def show
@@ -26,6 +30,21 @@ class UtilitiesController < ApplicationController
     end
   end
 
+  def edit
+  end
+  
+  def update
+    respond_to do |format|
+      if @utility.update(utility_params)
+        format.html { redirect_to :flats, notice: 'utility was successfully updated.' }
+        format.json { render :show, status: :ok, location: @utility }
+      else
+        format.html { render :edit }
+        format.json { render json: @utility.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  
   def destroy
     @utility.destroy
     respond_to do |format|

@@ -29,6 +29,10 @@ class AccountsController < ApplicationController
 
     respond_to do |format|
       if @account.save
+        # if @utility.tariff.is_counter
+        #   counter = Counter.new(utility_id: @utility.id)
+        # end
+
         format.html { redirect_to @account, notice: 'Account was successfully created.' }
         format.json { render :show, status: :created, location: @account }
       else

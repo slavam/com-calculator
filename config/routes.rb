@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :counters
   # resources :utilities
   get 'utilities', to: 'utilities#index'
   get 'flats/:flat_id/accounts', to: 'accounts#index'

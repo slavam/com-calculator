@@ -2,6 +2,7 @@ class Utility < ActiveRecord::Base
   belongs_to :flat
   belongs_to :category
   belongs_to :tariff
+  # has_one :counter
   
   def payment
     return case category.name

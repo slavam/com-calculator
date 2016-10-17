@@ -13,9 +13,6 @@
     %tr
       %th Тариф:
       %td= @utility.tariff.name
-    %tr
-      %th По счетчику?:
-      %td= @utility.category.is_counter ? "Да" : "Нет"
     - if @utility.category.is_counter
       %tr
         %th Описание счетчика:
@@ -31,7 +28,7 @@
   %br
 
   .actions
-    = link_to 'Услуги', utilities_path
-    = link_to 'Edit', edit_flat_path(@flat)
-    = link_to 'Delete', flat_path(@flat), :method => :delete, :confirm => "Do you ready to delete flat?"
+    = link_to 'Услуги', utilities_path(flat_id: @flat.id)
+    = link_to 'Edit', edit_flat_utility_path(flat_id: @flat.id, id: @utility.id)
+    = link_to 'Delete', utilities_path(@utility), :method => :delete, :confirm => "Do you ready to delete utility?"
     = link_to 'Back', flats_path 

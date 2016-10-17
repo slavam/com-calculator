@@ -39,7 +39,13 @@ ActiveRecord::Schema.define(version: 20161017085216) do
   end
 
   create_table "counters", force: :cascade do |t|
+    t.integer "account_id"
+    t.integer "utility_id"
+    t.float   "value",      default: 0.0
   end
+
+  add_index "counters", ["account_id"], name: "index_counters_on_account_id", using: :btree
+  add_index "counters", ["utility_id"], name: "index_counters_on_utility_id", using: :btree
 
   create_table "flats", force: :cascade do |t|
     t.integer  "user_id"
@@ -98,6 +104,8 @@ ActiveRecord::Schema.define(version: 20161017085216) do
 
   add_foreign_key "accounts", "flats"
   add_foreign_key "accounts", "users"
+  add_foreign_key "counters", "accounts"
+  add_foreign_key "counters", "utilities"
   add_foreign_key "flats", "users"
   add_foreign_key "tariffs", "categories"
   add_foreign_key "utilities", "categories"

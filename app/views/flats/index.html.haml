@@ -16,6 +16,7 @@
         %td= link_to 'Edit', edit_flat_path(flat)
         %td= link_to 'Destroy', flat, method: :delete, data: { confirm: 'Are you sure?' }
         %td= link_to 'Счета', flat_accounts_path(flat)
+        %td= link_to 'Услуги', utilities_path(flat_id: flat.id)
 
 %br
 
