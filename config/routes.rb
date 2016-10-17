@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   # resources :utilities
+  get 'utilities', to: 'utilities#index'
   get 'flats/:flat_id/accounts', to: 'accounts#index'
   post 'flats/:flat_id/utilities/new', to: 'utilities#create'
   resources :flats do

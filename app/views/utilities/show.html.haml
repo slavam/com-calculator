@@ -1,0 +1,37 @@
+%h1 Услуга
+.content
+  %table.card
+    %tr
+      %th Адрес:
+      %td= @flat.address
+    %tr
+      %th Плательщик
+      %td= @flat.payer_shortname
+    %tr
+      %th Категория:
+      %td= @utility.category.name
+    %tr
+      %th Тариф:
+      %td= @utility.tariff.name
+    %tr
+      %th По счетчику?:
+      %td= @utility.category.is_counter ? "Да" : "Нет"
+    - if @utility.category.is_counter
+      %tr
+        %th Описание счетчика:
+        %td= @utility.description_counter
+      %tr
+        %th Начальные показания:
+        %td= @utility.start_value_counter
+    - else
+      %tr
+        %th Платеж:
+        %td= @utility.payment
+
+  %br
+
+  .actions
+    = link_to 'Услуги', utilities_path
+    = link_to 'Edit', edit_flat_path(@flat)
+    = link_to 'Delete', flat_path(@flat), :method => :delete, :confirm => "Do you ready to delete flat?"
+    = link_to 'Back', flats_path 

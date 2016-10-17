@@ -11,14 +11,17 @@ R = React.DOM
   render: -> 
     R.div 
       className: 'flat-utilities'
-
       R.h2
         className: 'h2Title'
         'Услуги для жилья'
       R.p null, "Адрес: "+@props.flat.address
       R.p null, "Плательщик: "+@props.flat.payer_lastname
     
-      React.createElement RecordForm, categories: @props.categories, tariffs: @props.tariffs, handleNewUtility: @addUtility
+      R.h2
+        className: 'h2Title'
+        'Создать услугу'
+      R.p null, 'Всего услуг - '+@state.utilities.length
+      React.createElement RecordForm, categories: @props.categories, tariffs: @props.tariffs, handleNewUtility: @addUtility, utilities: @props.utilities, flat_id: @props.flat.id
       # React.createElement SelectCategory, categories: @props.categories, myOnChange: @handleCategoryChange
 
       R.h2
@@ -36,11 +39,19 @@ R = React.DOM
             R.th null, 'Категория'
             R.th null, 'Тариф'
             R.th null, 'Счетчик'
+            R.th null, 'Actions'
         R.tbody null,
           for utility in @props.utilities
             React.createElement UtilityRow, key: utility.id, utility: utility, categories: @props.categories, tariffs: @props.tariffs
             
 @UtilityRow = React.createClass
+  deleteClick: (e) ->
+    e.preventDefault()
+    $.get '', { id: @props.utility.id}, (data) =>
+      null # @props.handleNewUtility data
+      @setState @getInitialState()
+    , 'JSON'
+    
   render: ->
     category = (c for c in @props.categories when c.id is @props.utility.category_id)
     tariff = (t for t in @props.tariffs when t.id is @props.utility.tariff_id)
@@ -48,17 +59,21 @@ R = React.DOM
       R.td null, category[0].name
       R.td null, tariff[0].value
       R.td null, @props.utility.description_counter
+      R.td null
+        R.a 
+          onClick: @deleteClick
+          'Удалить'
       
 @RecordForm = React.createClass
   getInitialState: ->
     category_id: 1
-    tariff_id: 1
-    tariffs: (tariff for tariff in @props.tariffs when tariff.category_id is 1)
+    tariff_id: 4
+    # utilities: @props.utilities
     description_counter: ''
     start_value_counter: ''
   handleCategoryChange: (value) ->
     @setState category_id: +value    
-    @setState tariffs: (tariff for tariff in @props.tariffs when tariff.category_id is +value)
+    # @setState tariffs: (tariff for tariff in @props.tariffs when tariff.category_id is +value)
   handleTariffChange: (value) ->
     @setState tariff_id: +value    
   handleChange: (e) ->
@@ -66,50 +81,48 @@ R = React.DOM
     @setState "#{ name }": e.target.value
   handleSubmit: (e) ->
     e.preventDefault()
-    $.post '', { utility: {category_id: @state.category_id, tariff_id: @state.tariff_id, description_counter: @state.description_counter, start_value_counter: @state.start_value_counter }}, (data) =>
+    $.post '', { flat_id: @props.flat_id, utility: {category_id: @state.category_id, tariff_id: @state.tariff_id, description_counter: @state.description_counter, start_value_counter: @state.start_value_counter }}, (data) =>
       @props.handleNewUtility data
       @setState @getInitialState()
     , 'JSON'
+    document.getElementById("categorySelect").selectedIndex = "1";
+    document.getElementById("tariffSelect").selectedIndex = "0";
   render: ->
+    
     R.form
       className: 'form-inline'
       onSubmit: @handleSubmit
       R.div null
-        # className: 'form-group'
+        # R.p null, 'Всего услуг - '+@state.utilities.length
         R.h4 
           className: 'form-control'
           "Категория: "
-          React.createElement SelectCategory, categories: @props.categories, myOnChange: @handleCategoryChange
+          React.createElement SelectCategory2, categories: @props.categories, myOnChange: @handleCategoryChange
       R.br null
-      R.div 
-        className: 'form-group'
+      R.div null
         R.h4 
           className: 'form-control'
           "Тариф: "
-          React.createElement SelectTariff, tariffs: @state.tariffs, myOnChange: @handleTariffChange
+          React.createElement SelectTariff, tariffs: @props.tariffs, category_id: @state.category_id, myOnChange: @handleTariffChange
       R.br null
-      React.DOM.div
-        className: 'form-group'
+      R.div null
         R.h4 
           className: 'form-control'
           "Описание счетчика: "
-          React.DOM.input
+          R.input
             type: 'text'
-            # className: 'form-control'
             placeholder: 'Описание'
             name: 'description_counter'
             disabled: !(c for c in @props.categories when c.id is @state.category_id)[0].is_counter
             value: @state.description_counter
             onChange: @handleChange
       R.br null
-      R.div
-        className: 'form-group'
+      R.div null
         R.h4
           className: 'form-control'
           "Начальное показание счетчика: "
-          React.DOM.input
+          R.input
             type: 'number'
-            # className: 'form-control'
             placeholder: 'Значение'
             name: 'start_value_counter'
             disabled: !(c for c in @props.categories when c.id is @state.category_id)[0].is_counter
@@ -122,12 +135,12 @@ R = React.DOM
         # disabled: !@valid()
         'Создать запись'      
             
-@SelectCategory = React.createClass      
+@SelectCategory2 = React.createClass      
   handleChange: ->
     @props.myOnChange @refs.selectCategory.value
   render: ->
     R.select
-      className: 'selectCat'
+      id: 'categorySelect'
       defaultValue: 1
       ref: 'selectCategory'
       onChange: @handleChange
@@ -143,10 +156,12 @@ R = React.DOM
   render: ->
     R.select
       className: 'selectTrf'
+      id: 'tariffSelect'
       defaultValue: 4
       ref: 'selectTariff'
       onChange: @handleChange
-      for tariff in @props.tariffs
+      # for tariff in @props.tariffs
+      for tariff in @props.tariffs when tariff.category_id is @props.category_id
         R.option
           key: tariff.id
           value: tariff.id

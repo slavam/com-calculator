@@ -37,6 +37,8 @@ gem 'showdown-rails'
 
 gem 'autoprefixer-rails'
 
+gem 'sprockets', '3.6.3'
+
 # using CoffeeScript with JSX markup
 gem 'sprockets-coffee-react'
 
