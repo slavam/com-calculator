@@ -1,0 +1,46 @@
+# coding: utf-8
+!!! strict
+%html
+  %head
+    %title Communal Calculator
+    %meta{ 'http-equiv' => 'Content-Type', :content => 'text/html; charset=UTF-8' }
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tag
+
+
+  %body
+    %nav{class: "navbar navbar-inverse"}
+      %div{ class:"container"}
+        %div{ class: "navbar-header"}
+          = link_to 'Коммунальный калькулятор', root_path, class: 'navbar-brand' 
+        %div{ id: "navbar"}
+          - if current_user 
+            %ul{ class: "nav navbar-nav pull-right"}
+              %li= image_tag current_user.image_url, alt: current_user.name 
+              %li= link_to 'Log Out', logout_path, method: :delete 
+          - else 
+            %ul{ class: "nav navbar-nav"}
+              %li= link_to 'Twitter', '/auth/twitter' 
+              %li= link_to 'Facebook', '/auth/facebook'
+              %li= link_to 'Google+', '/auth/google' 
+              %li= link_to 'LinkedIn', '/auth/linkedin'
+    #tabs
+      %ul
+        - if not current_user
+          = render :partial => 'layouts/menuItem', :collection => [ |
+            ['Тарифы', tariffs_path]     |
+          ] |
+          -
+        - else
+          %div{'style' => "float: left;"}
+            = render :partial => 'layouts/menuItem', :collection => [ |
+              ['Тарифы', tariffs_path],     |
+              ['Жилье', flats_path]     |
+            ] |
+    %div{ class: "container"}
+      - flash.each do |key, value| 
+        %div{ class: "alert alert-#{key}"}
+          = value
+    = yield 
+
