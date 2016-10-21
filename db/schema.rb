@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161017085216) do
+ActiveRecord::Schema.define(version: 20161018110817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,22 @@ ActiveRecord::Schema.define(version: 20161017085216) do
 
   add_index "flats", ["user_id"], name: "index_flats_on_user_id", using: :btree
 
+  create_table "payments", force: :cascade do |t|
+    t.integer  "account_id"
+    t.integer  "utility_id"
+    t.integer  "months_number",                              default: 1
+    t.decimal  "amount",            precision: 10, scale: 2,             null: false
+    t.float    "tariff_value",                                           null: false
+    t.float    "quantity",                                               null: false
+    t.float    "old_value_counter"
+    t.float    "new_value_counter"
+    t.datetime "created_at",                                             null: false
+    t.datetime "updated_at",                                             null: false
+  end
+
+  add_index "payments", ["account_id"], name: "index_payments_on_account_id", using: :btree
+  add_index "payments", ["utility_id"], name: "index_payments_on_utility_id", using: :btree
+
   create_table "tariffs", force: :cascade do |t|
     t.integer  "category_id"
     t.string   "name"
@@ -92,10 +108,11 @@ ActiveRecord::Schema.define(version: 20161017085216) do
     t.integer  "flat_id"
     t.integer  "category_id"
     t.integer  "tariff_id"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.string   "description_counter"
     t.float    "start_value_counter"
+    t.float    "last_value_counter",  default: 0.0
   end
 
   add_index "utilities", ["category_id"], name: "index_utilities_on_category_id", using: :btree
@@ -107,6 +124,8 @@ ActiveRecord::Schema.define(version: 20161017085216) do
   add_foreign_key "counters", "accounts"
   add_foreign_key "counters", "utilities"
   add_foreign_key "flats", "users"
+  add_foreign_key "payments", "accounts"
+  add_foreign_key "payments", "utilities"
   add_foreign_key "tariffs", "categories"
   add_foreign_key "utilities", "categories"
   add_foreign_key "utilities", "flats"

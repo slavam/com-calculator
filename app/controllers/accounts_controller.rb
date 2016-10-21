@@ -15,7 +15,12 @@ class AccountsController < ApplicationController
 
   # GET /accounts/new
   def new
-    @account = Account.new
+    # @account = Account.new
+    @utilities = @flat.utilities
+    @x_u = []
+    @utilities.each {|u| @x_u << u.as_json.merge({category_name: u.category.name, 
+      tariff_value: u.tariff.value, amount: u.payment, is_counter: u.category.is_counter})
+    }
   end
 
   # GET /accounts/1/edit

@@ -1,5 +1,7 @@
-<h1>New Account</h1>
-
-<%= render 'form' %>
-
-<%= link_to 'Back', accounts_path %>
+<div class="container">
+  <h1>Новый счет</h1>
+    <div id="content">
+    <%= react_component 'NewAccount', { flat: @flat, utilities: @x_u } %>
+    </div>
+  <%= link_to 'Back', flat_accounts_path %>
+</div>

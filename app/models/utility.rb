@@ -3,15 +3,16 @@ class Utility < ActiveRecord::Base
   belongs_to :category
   belongs_to :tariff
   # has_one :counter
+  # validates :start_value_counter, presence: true if category.is_counter
   
   def payment
     return case category.name
       when 'Квартплата'
         self.tariff.value * self.flat.total_area
       when 'Электроэнергия'
-        volume = self.counter.last_volume
-        tariff = self.tariff.tariff_by_volume(volume)
-        tariff * volume
+        # volume = self.counter.last_volume
+        # tariff = self.tariff.tariff_by_volume(volume)
+        # tariff * volume
       when 'Газ'
         self.tariff.value * self.flat.residents_number
       when 'Отопление'

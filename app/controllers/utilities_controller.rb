@@ -22,6 +22,7 @@ class UtilitiesController < ApplicationController
   def create
     @utility = Utility.new(utility_params)
     @utility.flat_id = @flat.id
+    @utility.last_value_counter = @utility.start_value_counter if @utility.start_value_counter > 0
 
     if @utility.save
       render json: @utility
@@ -63,7 +64,8 @@ private
     end
     
     def utility_params
-      params.require(:utility).permit(:flat_id, :category_id, :tariff_id, :description_counter, :start_value_counter)
+      params.require(:utility).permit(:flat_id, :category_id, :tariff_id, :description_counter, 
+        :start_value_counter, :last_value_counter)
     end
   
 end
