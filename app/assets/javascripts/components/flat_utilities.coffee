@@ -7,6 +7,7 @@ R = React.DOM
     utilities = @state.utilities.slice()
     utilities.push record
     @setState utilities: utilities
+    
 
   render: -> 
     R.div 
@@ -68,12 +69,11 @@ R = React.DOM
   getInitialState: ->
     category_id: 1
     tariff_id: 4
-    # utilities: @props.utilities
     description_counter: ''
     start_value_counter: ''
   handleCategoryChange: (value) ->
     @setState category_id: +value    
-    # @setState tariffs: (tariff for tariff in @props.tariffs when tariff.category_id is +value)
+    @setState tariff_id: (tariff for tariff in @props.tariffs when tariff.category_id is +value)[0].id
   handleTariffChange: (value) ->
     @setState tariff_id: +value    
   handleChange: (e) ->
@@ -85,8 +85,9 @@ R = React.DOM
       @props.handleNewUtility data
       @setState @getInitialState()
     , 'JSON'
-    document.getElementById("categorySelect").selectedIndex = "1";
+    document.getElementById("categorySelect").selectedIndex = "3";
     document.getElementById("tariffSelect").selectedIndex = "0";
+    
   render: ->
     
     R.form
@@ -103,7 +104,7 @@ R = React.DOM
         R.h4 
           className: 'form-control'
           "Тариф: "
-          React.createElement SelectTariff, tariffs: @props.tariffs, category_id: @state.category_id, myOnChange: @handleTariffChange
+          React.createElement SelectTariff2, tariffs: @props.tariffs, category_id: @state.category_id, myOnChange: @handleTariffChange
       R.br null
       R.div null
         R.h4 
@@ -150,7 +151,7 @@ R = React.DOM
           value: category.id
           category.name
           
-@SelectTariff = React.createClass      
+@SelectTariff2 = React.createClass      
   handleChange: ->
     @props.myOnChange @refs.selectTariff.value
   render: ->
@@ -160,7 +161,6 @@ R = React.DOM
       defaultValue: 4
       ref: 'selectTariff'
       onChange: @handleChange
-      # for tariff in @props.tariffs
       for tariff in @props.tariffs when tariff.category_id is @props.category_id
         R.option
           key: tariff.id
