@@ -15,9 +15,8 @@
         %td= account.start_date
         %td= account.stop_date
         %td= account.total
-        %td= link_to 'Show', tariff
-        %td= link_to 'Edit', edit_tariff_path(tariff)
-        %td= link_to 'Destroy', tariff, method: :delete, data: { confirm: 'Are you sure?' }
+        %td= link_to 'Show', flat_account_path(id: account.id)
+        %td= link_to 'Destroy', flat_account_path(@flat.id, account.id), method: :delete, data: { confirm: 'Are you sure?' }
 
 %br
 

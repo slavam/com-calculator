@@ -19,4 +19,18 @@ class Utility < ActiveRecord::Base
         (self.tariff.value * self.flat.heated_area).round(2)
     end
   end
+  def quantity
+    return case category.name
+      when 'Квартплата'
+        self.flat.total_area
+      # when 'Электроэнергия'
+        # volume = self.counter.last_volume
+        # tariff = self.tariff.tariff_by_volume(volume)
+        # tariff * volume
+      when 'Газ'
+        self.flat.residents_number
+      when 'Отопление'
+        (self.flat.heated_area).round(2)
+    end
+  end
 end

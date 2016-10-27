@@ -1,0 +1,32 @@
+%h1 Счет
+.container
+  %p= "Период с "+@account.start_date.to_s+" по "+@account.stop_date.to_s
+  %p= "Адрес: "+@flat.address
+  %p= "Плательщик: "+@flat.payer_shortname
+  %h4= "Стоимость услуг"
+  .content
+    %table.card
+      %tr
+        %th Категория
+        %th Сумма
+        %th Тариф
+        %th Количество
+        %th Было
+        %th Стало
+        -for p in @account.payments
+          %tr
+            %td= p.utility.category.name
+            %td= p.amount
+            %td= p.utility.tariff.value
+            %td= p.quantity
+            %td= p.utility.category.is_counter ? p.old_value_counter : ""
+            %td= p.utility.category.is_counter ? p.new_value_counter : ""
+      %tr 
+        %td Итого
+        %td= @account.total
+    %br
+  
+    .actions
+      = link_to 'Услуги', flat_utilities_path
+      = link_to 'Удалить', flat_account_path, :method => :delete, :confirm => "Удалить счет?"
+      = link_to 'Счета', flat_accounts_path 
