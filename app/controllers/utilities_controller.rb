@@ -1,5 +1,5 @@
 class UtilitiesController < ApplicationController
-  before_action :set_flat, only: [:new, :create, :show, :edit, :update]
+  before_action :set_flat, only: [:index, :new, :create, :show, :edit, :update]
   before_action :set_utility, only: [:show, :edit, :update, :destroy]
   
   def index 

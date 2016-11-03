@@ -1,25 +1,26 @@
-= form_for(@utility, url: flat_utility_path(@flat, @utility)) do |f| 
-  - if @utility.errors.any?
-    %div (id="error_explanation")
-    %h2= pluralize(@utility.errors.count, "error") + "prohibited this utility from being saved:"
-
-    %ul
-      - @utility.errors.full_messages.each do |message| 
-        %li= message 
-
-  %div(class="field")
-  = f.label "Описание счетчика:" 
-  %br
-  = f.text_field :description_counter, :size => 100
-  %br
-  = f.label "Начальные показания:" 
-  %br
-  = f.text_field :start_value_counter
-  %br
-  = f.label "Последние показания:" 
-  %br
-  = f.text_field :last_value_counter
-  %br
+.container
+  = form_for(@utility, url: flat_utility_path(@flat, @utility)) do |f| 
+    - if @utility.errors.any?
+      %div (id="error_explanation")
+      %h2= pluralize(@utility.errors.count, "error") + "prohibited this utility from being saved:"
   
-  %div(class="actions")
-  = f.submit("Сохранить")
+      %ul
+        - @utility.errors.full_messages.each do |message| 
+          %li= message 
+  
+    %div(class="field")
+    = f.label "Описание счетчика:" 
+    %br
+    = f.text_field :description_counter, :size => 100
+    %br
+    = f.label "Начальные показания:" 
+    %br
+    = f.text_field :start_value_counter
+    %br
+    = f.label "Последние показания:" 
+    %br
+    = f.text_field :last_value_counter
+    %br
+    
+    %div(class="actions")
+    = f.submit("Сохранить")

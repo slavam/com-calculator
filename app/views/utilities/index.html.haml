@@ -1,23 +1,22 @@
 %h1= "Услуги"
-
-%table
-  %thead
-    %tr
-      %th= "Адрес"
-      %th= "Категория"
-      %th= "Тариф"
-      %th(colspan="3")
-
-  %tbody
-    - @utilities.each do |u| 
+.container
+  %p= "Адрес: "+@flat.address
+  %p= "Плательщик: "+@flat.payer_shortname
+  %table
+    %thead
       %tr
-        %td= u.flat.address
-        %td= u.category.name
-        %td= u.tariff.name
-        %td= link_to 'Show', flat_utility_path(u.flat.id, u.id)
-        %td= link_to 'Edit', edit_flat_utility_path(u.flat.id, u.id)
-        %td= link_to 'Destroy', flat_utility_path(u.flat.id, u.id), method: :delete, data: { confirm: 'Are you sure?' }
-
-%br
-
-= link_to 'Адреса', flats_path
+        %th= "Категория"
+        %th= "Тариф"
+        %th(colspan="3")
+  
+    %tbody
+      - @utilities.each do |u| 
+        %tr
+          %td= u.category.name
+          %td= u.tariff.name
+          %td= link_to 'Просмотр', flat_utility_path(id: u.id)
+          %td= link_to 'Удалить', flat_utility_path(u.flat.id, u.id), method: :delete, data: { confirm: 'Are you sure?' }
+  
+  %br
+  
+  = link_to 'Жилье', flats_path

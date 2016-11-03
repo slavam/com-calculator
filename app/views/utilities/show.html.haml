@@ -1,18 +1,21 @@
 %h1 Услуга
-.content
+.container
   %table.card
     %tr
       %th Адрес:
       %td= @flat.address
     %tr
-      %th Плательщик
+      %th Плательщик:
       %td= @flat.payer_shortname
     %tr
       %th Категория:
       %td= @utility.category.name
     %tr
-      %th Тариф:
+      %th Тариф описание:
       %td= @utility.tariff.name
+    %tr
+      %th Тариф значение:
+      %td= @utility.tariff.value
     - if @utility.category.is_counter
       %tr
         %th Описание счетчика:
@@ -25,13 +28,16 @@
         %td= @utility.last_value_counter
     - else
       %tr
+        %th Количество:
+        %td= @utility.quantity
+      %tr
         %th Платеж:
         %td= @utility.payment
 
   %br
 
   .actions
-    = link_to 'Услуги', utilities_path(flat_id: @flat.id)
-    = link_to 'Edit', edit_flat_utility_path(flat_id: @flat.id, id: @utility.id)
-    = link_to 'Delete', utilities_path(@utility), :method => :delete, :confirm => "Do you ready to delete utility?"
-    = link_to 'Back', flats_path 
+    = link_to 'Услуги', flat_utilities_path
+    = link_to 'Изменить', edit_flat_utility_path
+    = link_to 'Удалить', utilities_path(@utility), method: :delete, data: { confirm: "Do you ready to delete utility?"}
+    = link_to 'Жилье', flats_path 
