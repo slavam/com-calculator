@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161018110817) do
+ActiveRecord::Schema.define(version: 20161103121137) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,10 +32,11 @@ ActiveRecord::Schema.define(version: 20161018110817) do
   create_table "categories", force: :cascade do |t|
     t.string   "name"
     t.string   "description"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.string   "unit"
-    t.boolean  "is_counter",  default: false
+    t.boolean  "is_counter",         default: false
+    t.boolean  "is_variable_tariff", default: false
   end
 
   create_table "counters", force: :cascade do |t|
@@ -81,10 +82,12 @@ ActiveRecord::Schema.define(version: 20161018110817) do
   create_table "tariffs", force: :cascade do |t|
     t.integer  "category_id"
     t.string   "name"
-    t.decimal  "value",       precision: 10, scale: 2, null: false
+    t.decimal  "value",       precision: 10, scale: 2,               null: false
     t.date     "start_date"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.float    "low_edge",                             default: 0.0
+    t.float    "top_edge",                             default: 0.0
   end
 
   add_index "tariffs", ["category_id"], name: "index_tariffs_on_category_id", using: :btree

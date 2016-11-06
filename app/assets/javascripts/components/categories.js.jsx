@@ -29,6 +29,7 @@ var CategoryRow = React.createClass({
         <td>{this.props.category.description}</td>
         <td>{this.props.category.unit}</td>
         <td>{this.props.category.is_counter ? "Да":"Нет"}</td>
+        <td>{this.props.category.is_variable_tariff ? "Да":"Нет"}</td>
       </tr>
     );
   }
@@ -48,6 +49,7 @@ var CategoryTable = React.createClass({
             <th>Описание</th>
             <th>Единица измерения</th>
             <th>По счетчику?</th>
+            <th>Переменный тариф?</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>

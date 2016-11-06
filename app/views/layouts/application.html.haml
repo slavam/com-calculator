@@ -35,6 +35,7 @@
         - else
           %div{'style' => "float: left;"}
             = render :partial => 'layouts/menuItem', :collection => [ |
+              ['Категории услуг', categories_path],     |
               ['Тарифы', tariffs_path],     |
               ['Жилье', flats_path]     |
             ] |

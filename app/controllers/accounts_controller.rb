@@ -1,6 +1,10 @@
 class AccountsController < ApplicationController
   before_action :set_account, only: [:show, :edit, :update, :destroy]
   before_action :set_flat, only: [:index, :new, :show, :create, :update, :destroy]
+  
+  def get_tariff_by_volume
+    render json: {tariff: Tariff.tariff_by_volume( params[:category_id], params[:volume])}
+  end
   # GET /accounts
   # GET /accounts.json
   def index
@@ -17,7 +21,8 @@ class AccountsController < ApplicationController
   def new
     @utilities = @flat.utilities
     @x_u = []
-    @utilities.each {|u| @x_u << u.as_json.merge({category_name: u.category.name, 
+    @utilities.each {|u| @x_u << u.as_json.merge({category_name: u.category.name, category_id: u.category_id,
+      is_variable_tariff: u.category.is_variable_tariff, low_edge: u.tariff.low_edge, top_edge: u.tariff.top_edge,
       tariff_value: u.tariff.value, amount: u.payment, is_counter: u.category.is_counter})
     }
   end

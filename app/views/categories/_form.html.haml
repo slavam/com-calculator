@@ -6,24 +6,27 @@
     %ul
       - @category.errors.full_messages.each do |message| 
         %li= message 
-
-  %div(class="field")
-  = f.label "Название" 
-  %br
-  = f.text_field :name 
-  %br
-  = f.label "Описание" 
-  %br
-  = f.text_field :description, :size => 100
-  %br
-  = f.label "Единица измерения" 
-  %br
-  = f.text_field :unit
-  %br
-  = f.label "По счетчику?" 
-  %br
-  = f.text_field :is_counter
-  %br
-  
-  %div(class="actions")
-  = f.submit("Сохранить")
+  .container
+    %div(class="field")
+    = f.label "Название" 
+    %br
+    = f.text_field :name 
+    %br
+    = f.label "Описание" 
+    %br
+    = f.text_field :description, :size => 100
+    %br
+    = f.label "Единица измерения" 
+    %br
+    = f.text_field :unit
+    %br
+    = f.label "По счетчику?" 
+    %br
+    = f.check_box :is_counter
+    %br
+    = f.label "Переменный тариф?" 
+    %br
+    = f.check_box :is_variable_tariff
+    %br
+    %div(class="actions")
+    = f.submit("Сохранить")

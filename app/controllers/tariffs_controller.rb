@@ -47,7 +47,7 @@ class TariffsController < ApplicationController
     end
   
     def tariff_params
-      params.require(:tariff).permit(:name, :value, :start_date, :category_id)
+      params.require(:tariff).permit(:name, :value, :start_date, :category_id, :low_edge, :top_edge)
     end
 
 end
