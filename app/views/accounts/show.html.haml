@@ -17,7 +17,7 @@
           %tr
             %td= p.utility.category.name
             %td{style: 'text-align:right'}= number_with_precision(p.amount, :precision => 2)
-            %td{style: 'text-align:right'}= number_with_precision(p.utility.tariff.value, :precision => 2)
+            %td{style: 'text-align:right'}= number_with_precision(p.tariff_value, :precision => 2)
             %td{style: 'text-align:right'}= p.quantity
             %td{style: 'text-align:right'}= p.utility.category.is_counter ? p.old_value_counter : ""
             %td{style: 'text-align:right'}= p.utility.category.is_counter ? p.new_value_counter : ""

@@ -17,6 +17,8 @@ class Utility < ActiveRecord::Base
         self.tariff.value * self.flat.residents_number
       when 'Отопление'
         (self.tariff.value * self.flat.heated_area).round(2)
+      else
+        0
     end
   end
   def quantity

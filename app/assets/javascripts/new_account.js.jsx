@@ -57,41 +57,61 @@ class AccountUtilityRow extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       counterValue: this.props.utility.last_value_counter,
-      tariffValue: this.props.utility.tariff_value
+      tariffValue: this.props.utility.variables_tariffs[0].value,
+      low_edge: this.props.utility.variables_tariffs[0].low_edge,
+      top_edge: this.props.utility.variables_tariffs[0].top_edge
     };
   }
   handleChange() {
     this.setState({
       counterValue: this.refs.counterValue.value
     });
-    let delta = this.refs.counterValue.value - this.props.utility.last_value_counter;
-    if (this.props.utility.is_variable_tariff == true && (delta < this.props.utility.low_edge || delta > this.props.utility.top_edge)){
-      $.ajax({
-      type: 'GET',
-      url: "get_tariff_by_volume?category_id="+this.props.utility.category_id+"&volume="+delta,
-      // data: data
-      })
-      .done(function(data) {
-        // this.props.utility.tariff_value = data.tariff;
-        this.setState({
-          tariffValue: data.tariff
-        });
-      }.bind(this))
-      .fail(function(jqXhr) {
-        console.log('failed to register');
+    const delta = this.refs.counterValue.value - this.props.utility.last_value_counter;
+    if (delta >= 0 && this.props.utility.is_variable_tariff == true && (delta < this.state.low_edge || delta > this.state.top_edge)){
+      // let ts = [];
+      const ts = this.props.utility.variables_tariffs.filter(function(v_t) {
+        return v_t.low_edge <= delta && delta <= v_t.top_edge;
       });
+      this.setState({
+        tariffValue: +ts[0].value,
+        low_edge: ts[0].low_edge,
+        top_edge: ts[0].top_edge
+      });
+      this.state.tariffValue = +ts[0].value;
+      // $.ajax({
+      // type: 'GET',
+      // url: "get_tariff_by_volume?category_id="+this.props.utility.category_id+"&volume="+delta,
+      // // data: data
+      // })
+      // .done(function(data) {
+      //   // this.props.utility.tariff_value = data.tariff;
+      //   this.setState({
+      //     tariffValue: data.tariff,
+      //     low_edge: data.low_edge,
+      //     top_edge: data.top_edge
+      //   });
+      //   this.props.onUserInput(
+      //   this.refs.counterValue.value,
+      //   this.refs.counterValue.dataset.utilityid, // Importan! Only utilityid, not utilityId
+      //   data.tariff
+      //   );
+      // }.bind(this))
+      // .fail(function(jqXhr) {
+      //   console.log('failed to register');
+      // });
     }
     this.props.onUserInput(
       this.refs.counterValue.value,
-      this.refs.counterValue.dataset.utilityid // Importan! Only utilityid, not utilityId
+      this.refs.counterValue.dataset.utilityid, // Importan! Only utilityid, not utilityId
+      this.state.tariffValue
     );
   }  
   render() {
     return (
       <tr>
         <td>{this.props.utility.category_name}</td>
-        <td>{this.props.utility.is_counter ? this.props.utility.last_value_counter : ''}</td>
-        <td>{this.props.utility.is_counter ?
+        <td>{(this.props.utility.is_counter && this.props.utility.category_name != "Водоотведение по счетчику") ? this.props.utility.last_value_counter : ''}</td>
+        <td>{(this.props.utility.is_counter && this.props.utility.category_name != "Водоотведение по счетчику") ?
           <input
           type="text"
           size="10"
@@ -101,7 +121,7 @@ class AccountUtilityRow extends React.Component {
           data-utilityId={this.props.utility.id}
           /> : ''}
         </td>
-        <td>{this.props.utility.is_counter ? (this.state.counterValue - this.props.utility.last_value_counter).toFixed(4) : ''}</td>
+        <td>{(this.props.utility.is_counter && this.props.utility.category_name != "Водоотведение по счетчику") ? (this.state.counterValue - this.props.utility.last_value_counter).toFixed(4) : ''}</td>
         <td>{this.props.utility.is_counter ? this.state.tariffValue : ''}</td>
         <td>{this.props.utility.amount ? this.props.utility.amount :
           ((this.state.counterValue - this.props.utility.last_value_counter)*this.state.tariffValue).toFixed(2)}
@@ -116,7 +136,9 @@ class UtilitiesTable extends React.Component{
     super(props);
     let amounts = [];
     this.props.utilities.forEach(function(utility) {
-      amounts.push({utility_id: utility.id, amount: utility.amount, old_value: utility.last_value_counter, new_value: utility.last_value_counter});
+      amounts.push({utility_id: utility.id, amount: utility.amount, 
+        old_value: utility.last_value_counter, new_value: utility.last_value_counter, 
+        tariff: utility.variables_tariffs[0].value});
     });
     this.state = {
       counterValue: '',
@@ -125,37 +147,36 @@ class UtilitiesTable extends React.Component{
     this.handleUserInput = this.handleUserInput.bind(this);
     this.handleAccountSubmit = this.handleAccountSubmit.bind(this);
   }
-  handleUserInput(counterValue, utilityId) {
-    this.setState({
-      counterValue: counterValue
-    });
+  handleUserInput(counterValue, utilityId, tariffValue) {
     let u;
     u = this.props.utilities.filter(function(utility) {
       return utility.id == utilityId;
     });
-    let delta = counterValue - u[0].last_value_counter;
-    // if (u[0].is_variable_tariff == true && (delta < u[0].low_edge || delta >u[0].top_edge)){
-    //   $.ajax({
-    //   type: 'GET',
-    //   url: "get_tariff_by_volume?category_id="+u[0].category_id+"&volume="+delta,
-    //   // data: data
-    //   })
-    //   .done(function(data) {
-    //     u[0].tariff_value = data.tariff;
-    //     this.setState({
-    //       counterValue: data.tariff
-    //     });
-    //   })
-    //   .fail(function(jqXhr) {
-    //     console.log('failed to register');
-    //   });
-    // }
-    this.state.amounts.forEach(function(amount, i) {
-      if (amount.utility_id == utilityId) {
-        this.state.amounts[i].amount= u[0].tariff_value * delta;
-        this.state.amounts[i].new_value = counterValue;
+    let delta = +counterValue - u[0].last_value_counter;
+    this.state.amounts.forEach(function(a, i) {
+      if (a.utility_id == utilityId) {
+        this.state.amounts[i].amount= +tariffValue * delta;
+        this.state.amounts[i].new_value= counterValue;
+        this.state.amounts[i].tariff = +tariffValue;
       }
     }.bind(this));
+    if (u[0].category_name == "Горячее водоснабжение по счетчику"){
+      let drain = this.props.utilities.filter(function(utility) {
+        return (utility.category_name == "Водоотведение по счетчику") && (utility.description_counter == u[0].description_counter);
+      });
+      drain[0].amount = (delta * drain[0].variables_tariffs[0].value).toFixed(2);
+      this.state.amounts.forEach(function(a, i) {
+        if (a.utility_id == drain[0].id) {
+          this.state.amounts[i].amount= drain[0].amount;
+          this.state.amounts[i].new_value= counterValue;
+          // this.state.amounts[i].tariff = +tariffValue;
+        }
+      }.bind(this));
+    }
+    this.refreshTotal();
+    this.setState({
+      counterValue: counterValue
+    });
   }
   refreshTotal() {
     let total = 0;

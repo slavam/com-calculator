@@ -3,7 +3,7 @@ class AccountsController < ApplicationController
   before_action :set_flat, only: [:index, :new, :show, :create, :update, :destroy]
   
   def get_tariff_by_volume
-    render json: {tariff: Tariff.tariff_by_volume( params[:category_id], params[:volume])}
+    render json: Tariff.tariff_by_volume( params[:category_id], params[:volume])
   end
   # GET /accounts
   # GET /accounts.json
@@ -22,8 +22,10 @@ class AccountsController < ApplicationController
     @utilities = @flat.utilities
     @x_u = []
     @utilities.each {|u| @x_u << u.as_json.merge({category_name: u.category.name, category_id: u.category_id,
-      is_variable_tariff: u.category.is_variable_tariff, low_edge: u.tariff.low_edge, top_edge: u.tariff.top_edge,
-      tariff_value: u.tariff.value, amount: u.payment, is_counter: u.category.is_counter})
+      # is_variable_tariff: u.category.is_variable_tariff, low_edge: u.tariff.low_edge, top_edge: u.tariff.top_edge,
+      is_variable_tariff: u.category.is_variable_tariff, variables_tariffs: Tariff.variables_tariffs( u.category_id),
+      # tariff_value: u.tariff.value, 
+      amount: u.payment, is_counter: u.category.is_counter})
     }
   end
 
@@ -41,10 +43,10 @@ class AccountsController < ApplicationController
       if @account.save
         params[:amounts].each {|key,a|
           utility = Utility.find(a[:utility_id])
-          p = @account.payments.build(utility_id: a[:utility_id], amount: a[:amount], 
-            tariff_value: utility.tariff.value,
+          p = @account.payments.build(utility_id: a[:utility_id], amount: a[:amount].to_f, 
+            tariff_value: a[:tariff].to_f, #utility.category.is_counter ? a[:tariff].to_f : utility.tariff.value,
             quantity: utility.category.is_counter ? a[:new_value].to_f - a[:old_value].to_f : utility.quantity,
-            old_value_counter: a[:old_value], new_value_counter: a[:new_value])
+            old_value_counter: a[:old_value].to_f, new_value_counter: a[:new_value].to_f)
           p.save
           utility.update(last_value_counter: a[:new_value]) if utility.category.is_counter
         }
