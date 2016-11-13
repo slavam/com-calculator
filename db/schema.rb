@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103121137) do
+ActiveRecord::Schema.define(version: 20161113142114) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,22 @@ ActiveRecord::Schema.define(version: 20161103121137) do
     t.boolean  "is_variable_tariff", default: false
   end
 
+  create_table "cities", force: :cascade do |t|
+    t.string  "name",          null: false
+    t.string  "name2"
+    t.integer "id_parent"
+    t.integer "last_erc_code"
+    t.integer "city_type_id"
+    t.integer "code_koatuu"
+  end
+
+  add_index "cities", ["city_type_id"], name: "index_cities_on_city_type_id", using: :btree
+
+  create_table "city_types", force: :cascade do |t|
+    t.string "name"
+    t.string "short_name"
+  end
+
   create_table "counters", force: :cascade do |t|
     t.integer "account_id"
     t.integer "utility_id"
@@ -63,6 +79,23 @@ ActiveRecord::Schema.define(version: 20161103121137) do
 
   add_index "flats", ["user_id"], name: "index_flats_on_user_id", using: :btree
 
+  create_table "house_locations", force: :cascade do |t|
+    t.integer "street_location_id"
+    t.integer "house_id"
+    t.integer "zip_code"
+    t.integer "area_id"
+  end
+
+  add_index "house_locations", ["house_id"], name: "index_house_locations_on_house_id", using: :btree
+  add_index "house_locations", ["street_location_id"], name: "index_house_locations_on_street_location_id", using: :btree
+
+  create_table "houses", force: :cascade do |t|
+    t.integer "n_house", null: false
+    t.integer "f_house"
+    t.string  "a_house"
+    t.integer "d_house"
+  end
+
   create_table "payments", force: :cascade do |t|
     t.integer  "account_id"
     t.integer  "utility_id"
@@ -78,6 +111,34 @@ ActiveRecord::Schema.define(version: 20161103121137) do
 
   add_index "payments", ["account_id"], name: "index_payments_on_account_id", using: :btree
   add_index "payments", ["utility_id"], name: "index_payments_on_utility_id", using: :btree
+
+  create_table "room_locations", force: :cascade do |t|
+    t.integer "house_location_id"
+    t.integer "room_id"
+  end
+
+  add_index "room_locations", ["house_location_id"], name: "index_room_locations_on_house_location_id", using: :btree
+  add_index "room_locations", ["room_id"], name: "index_room_locations_on_room_id", using: :btree
+
+  create_table "rooms", force: :cascade do |t|
+    t.integer "n_room"
+    t.string  "a_room"
+  end
+
+  create_table "street_locations", force: :cascade do |t|
+    t.integer "city_id"
+    t.string  "name",           null: false
+    t.string  "name2"
+    t.integer "street_type_id"
+  end
+
+  add_index "street_locations", ["city_id"], name: "index_street_locations_on_city_id", using: :btree
+  add_index "street_locations", ["street_type_id"], name: "index_street_locations_on_street_type_id", using: :btree
+
+  create_table "street_types", force: :cascade do |t|
+    t.string "name",       null: false
+    t.string "short_name"
+  end
 
   create_table "tariffs", force: :cascade do |t|
     t.integer  "category_id"
@@ -124,11 +185,18 @@ ActiveRecord::Schema.define(version: 20161103121137) do
 
   add_foreign_key "accounts", "flats"
   add_foreign_key "accounts", "users"
+  add_foreign_key "cities", "city_types"
   add_foreign_key "counters", "accounts"
   add_foreign_key "counters", "utilities"
   add_foreign_key "flats", "users"
+  add_foreign_key "house_locations", "houses"
+  add_foreign_key "house_locations", "street_locations"
   add_foreign_key "payments", "accounts"
   add_foreign_key "payments", "utilities"
+  add_foreign_key "room_locations", "house_locations"
+  add_foreign_key "room_locations", "rooms"
+  add_foreign_key "street_locations", "cities"
+  add_foreign_key "street_locations", "street_types"
   add_foreign_key "tariffs", "categories"
   add_foreign_key "utilities", "categories"
   add_foreign_key "utilities", "flats"

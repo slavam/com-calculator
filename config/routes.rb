@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  # resources :cities
+  resources :city_types
+  resources :cities
   resources :payments
   resources :counters
   # resources :utilities

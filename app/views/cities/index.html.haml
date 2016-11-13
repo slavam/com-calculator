@@ -15,10 +15,10 @@
         %td
           =h(city.code_koatuu)
         %td
-          =h city.city_type.short_name.to_utf
+          =h city.city_type.short_name
         %td 
-          = link_to h(city.name_rus.to_utf), :action => 'show', :id => city
+          = link_to h(city.name), :action => 'show', :id => city
         %td
           =h(city.id_parent)
-  = will_paginate @cities
+  
 

@@ -13,6 +13,7 @@ class Tariff < ActiveRecord::Base
   
   def self.variables_tariffs category_id
     self.where(category_id: category_id).select("id, value, low_edge, top_edge").order(:low_edge).map{|t|
-    {id: t.id, value: t.value, low_edge: t.low_edge, top_edge: t.top_edge}}
+      {id: t.id, value: t.value, low_edge: t.low_edge, top_edge: t.top_edge}
+    }
   end
 end
