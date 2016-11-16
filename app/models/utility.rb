@@ -32,7 +32,10 @@ class Utility < ActiveRecord::Base
       when 'Газ'
         self.flat.residents_number
       when 'Отопление'
-        (self.flat.heated_area).round(2)
+        self.flat.heated_area.round(2)
     end
+  end
+  def name_with_counter
+    self.category.name+" ("+description_counter+")"
   end
 end

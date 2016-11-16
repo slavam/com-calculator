@@ -12,6 +12,18 @@ class FlatsController < ApplicationController
     @flat = Flat.new
   end
   
+  def new_by_address
+    @cities = []
+    @streets = []
+    # City.all.order(:name).each {|c|
+    City.where("id in (1,2)").order(:name).each {|c|  # development mode
+      @cities << {id: c.id, name: c.city_type.short_name+' '+c.name} 
+    }
+    StreetLocation.where("city_id in (1,2)").order(:city_id, :name).each {|s|
+      @streets << {id: s.id, city_id: s.city_id, name: s.street_type.short_name+' '+s.name}
+    }
+  end
+  
   def create
     @flat = Flat.new(flat_params)
     

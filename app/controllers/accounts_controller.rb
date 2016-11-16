@@ -19,12 +19,11 @@ class AccountsController < ApplicationController
 
   # GET /accounts/new
   def new
-    @utilities = @flat.utilities
+    @utilities = @flat.utilities.order(:id)
     @x_u = []
-    @utilities.each {|u| @x_u << u.as_json.merge({category_name: u.category.name, category_id: u.category_id,
-      # is_variable_tariff: u.category.is_variable_tariff, low_edge: u.tariff.low_edge, top_edge: u.tariff.top_edge,
+    @utilities.each {|u| @x_u << u.as_json.merge({category_name: u.category.is_counter ? u.name_with_counter : u.category.name, 
+    category_id: u.category_id,
       is_variable_tariff: u.category.is_variable_tariff, variables_tariffs: Tariff.variables_tariffs( u.category_id),
-      # tariff_value: u.tariff.value, 
       amount: u.payment, is_counter: u.category.is_counter})
     }
   end

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :counters
   # resources :utilities
   get 'utilities', to: 'utilities#index'
+  get 'flats/new_by_address', to: 'flats#new_by_address'
   get 'flats/:flat_id/accounts', to: 'accounts#index'
   get 'accounts/get_tariff_by_volume', to: 'accounts#get_tariff_by_volume'
   get 'flats/:flat_id/accounts/get_tariff_by_volume', to: 'accounts#get_tariff_by_volume'
