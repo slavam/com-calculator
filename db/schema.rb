@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161113142114) do
+ActiveRecord::Schema.define(version: 20161123074910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,16 @@ ActiveRecord::Schema.define(version: 20161113142114) do
     t.string  "a_house"
     t.integer "d_house"
   end
+
+  create_table "owners", force: :cascade do |t|
+    t.integer "code_erc",         null: false
+    t.string  "full_name"
+    t.integer "room_location_id"
+    t.integer "city_id"
+  end
+
+  add_index "owners", ["city_id"], name: "index_owners_on_city_id", using: :btree
+  add_index "owners", ["room_location_id"], name: "index_owners_on_room_location_id", using: :btree
 
   create_table "payments", force: :cascade do |t|
     t.integer  "account_id"
@@ -191,6 +201,8 @@ ActiveRecord::Schema.define(version: 20161113142114) do
   add_foreign_key "flats", "users"
   add_foreign_key "house_locations", "houses"
   add_foreign_key "house_locations", "street_locations"
+  add_foreign_key "owners", "cities"
+  add_foreign_key "owners", "room_locations"
   add_foreign_key "payments", "accounts"
   add_foreign_key "payments", "utilities"
   add_foreign_key "room_locations", "house_locations"

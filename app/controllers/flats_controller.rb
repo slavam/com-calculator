@@ -2,7 +2,20 @@ class FlatsController < ApplicationController
   before_action :set_flat, only: [:show, :edit, :update, :destroy]
   
   def get_city_streets
-    render json: city_streets(params[:city_id])
+    streets = city_streets(params[:city_id])
+    houses = street_houses(streets[0][:id])
+    rooms = houses[0].present? ? house_rooms(houses[0][:id]) : []
+    render json: {streets: streets, houses: houses, rooms: rooms}
+  end
+  
+  def get_street_houses
+    houses = street_houses(params[:street_id])
+    rooms = houses[0].present? ? house_rooms(houses[0][:id]) : []
+    render json: {houses: houses, rooms: rooms}
+  end
+
+  def get_house_rooms
+    render json: {rooms: house_rooms(params[:house_id])}
   end
   
   def index
@@ -20,13 +33,8 @@ class FlatsController < ApplicationController
     @cities = City.joins("INNER JOIN city_types ct ON ct.id = cities.city_type_id").order("cities.name").
       select("cities.id as id, CONCAT(ct.short_name, ' ', cities.name) as name")
     @streets = city_streets(1)
-    @houses = street_houses (@streets[0][:id])
-    # HouseLocation.where("street_location_id in (select sl.id from  street_locations sl where sl.city_id in (2))").order(:street_location_id, :id).each {|h|
-    #   home = h.house.n_house.to_s + (h.house.f_house>0 ? '-' + h.house.f_house.to_s : '') + 
-    #     (h.house.d_house>0 ? '/'+h.house.d_house.to_s : '') + 
-    #     ((h.house.a_house.present? and h.house.a_house>'') ? '"'+h.house.a_house+'"' : '')
-    #   @houses << {id: h.id, street_location_id: h.street_location_id, home: home}
-    # }
+    @houses = street_houses(@streets[0][:id])
+    @rooms = house_rooms(@houses[0][:id])
   end
   
   def create
@@ -93,7 +101,7 @@ private
         FROM house_locations hl
         JOIN houses h ON h.id = hl.house_id
         WHERE hl.street_location_id = #{street_id} 
-        ORDER BY hl.street_location_id, h.n_house"
+        ORDER BY hl.street_location_id, h.n_house, h.d_house, h.a_house"
       houses = []
       HouseLocation.find_by_sql(query).each {|h|
         home = h.n_house.to_s + (h.f_house>0 ? '-' + h.f_house.to_s : '') + 
@@ -102,5 +110,20 @@ private
         houses << {id: h.hl_id, street_location_id: h.street_location_id, home: home}
       }
       houses
+    end
+    
+    def house_rooms house_id
+      query = "SELECT rl.id, house_location_id, n_room, a_room
+        FROM room_locations rl
+        JOIN rooms r on r.id=rl.room_id
+        WHERE house_location_id = #{house_id}
+        ORDER BY n_room, a_room"
+      rooms = []
+      RoomLocation.find_by_sql(query).each {|r|
+        room = (r.n_room>0 ? r.n_room.to_s : '') +
+        ((r.a_room.present? and r.a_room>'') ? '"'+r.a_room+'"' : '')
+        rooms << {id: r.id, house_location_id: r.house_location_id, room: room}
+      }
+      rooms
     end
 end

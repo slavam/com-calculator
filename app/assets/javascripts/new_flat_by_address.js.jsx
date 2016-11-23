@@ -1,10 +1,33 @@
+class RoomSelect extends React.Component{
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+  handleChange(event) {
+    this.setState({room_id: event.target.value});
+    // this.props.onUserInput(event.target.value);
+    // this.props.myOnChange(this.refs.selectCity.value);
+    // alert(event.target.value)
+  }
+  render(){
+    return <select className = "selectRoom" defaultValue = "1" ref = "selectRoom" onChange = {this.handleChange}>
+      {
+        this.props.rooms.map(function(room) {
+          return <option key = {room.id} value = {room.id}> {room.room} </option>;
+        }
+      )}
+    </select>;
+  }
+}
+
 class HouseSelect extends React.Component{
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(event) {
-    this.setState({house_id: event.target.value});
+    this.props.onUserInput(event.target.value);
+    // this.setState({house_id: event.target.value});
     // this.props.myOnChange(this.refs.selectCity.value);
     // alert(event.target.value)
   }
@@ -25,9 +48,8 @@ class StreetSelect extends React.Component{
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(event) {
-    this.setState({street_id: event.target.value});
-    // this.props.myOnChange(this.refs.selectCity.value);
-    // alert(event.target.value)
+    // this.setState({street_id: event.target.value});
+    this.props.onUserInput(event.target.value);
   }
   render(){
     return <select className = "selectStreet" defaultValue = "1" ref = "selectStreet" onChange = {this.handleChange}>
@@ -44,7 +66,6 @@ class CitySelect extends React.Component{
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
@@ -64,37 +85,52 @@ class CitySelect extends React.Component{
 class NewFlatByAddress extends React.Component{
   constructor(props){
     super(props);
-    // let s;
-    // s = this.props.streets.filter(function(street) {
-    //   return street.city_id == 1; // center
-    // });
-    // let h;
-    // h = this.props.houses.filter(function(house) {
-    //   return house.street_location_id == s[0].id;
-    // });
-
     this.state = {
       streets: this.props.streets,
-      houses: this.props.houses
+      houses: this.props.houses,
+      rooms: this.props.rooms
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCitySelected = this.handleCitySelected.bind(this);
+    this.handleStreetSelected = this.handleStreetSelected.bind(this);
+    this.handleHouseSelected = this.handleHouseSelected.bind(this);
   }  
+  handleHouseSelected(house_id){
+    $.ajax({
+      type: 'GET',
+      url: "get_house_rooms?house_id="+house_id
+      }).done(function(data) {
+        this.setState({
+          rooms: data.rooms
+        });
+      }.bind(this))
+      .fail(function(jqXhr) {
+        console.log('failed to register');
+      });
+  }
+  handleStreetSelected(street_id){
+    $.ajax({
+      type: 'GET',
+      url: "get_street_houses?street_id="+street_id,
+      }).done(function(data) {
+        this.setState({
+          houses: data.houses,
+          rooms: data.rooms
+        });
+      }.bind(this))
+      .fail(function(jqXhr) {
+        console.log('failed to register');
+      });
+  }
   handleCitySelected(city_id){
-    // let s;
-    // s = this.props.streets.filter(function(street) {
-    //   return street.city_id == city_id;
-    // });
-    // // this.state.streets = s;
-    // this.setState({
-    //   streets: s
-    // });
     $.ajax({
       type: 'GET',
       url: "get_city_streets?city_id="+city_id,
       }).done(function(data) {
         this.setState({
-          streets: data
+          streets: data.streets,
+          houses: data.houses,
+          rooms: data.rooms
         });
       }.bind(this))
       .fail(function(jqXhr) {
@@ -112,10 +148,13 @@ class NewFlatByAddress extends React.Component{
           <CitySelect cities={this.props.cities} onUserInput={this.handleCitySelected}/>
         </p>
         <p>Улица: 
-          <StreetSelect streets={this.state.streets} />
+          <StreetSelect streets={this.state.streets} onUserInput={this.handleStreetSelected} />
         </p>
         <p>Дом: 
-          <HouseSelect houses={this.state.houses} />
+          <HouseSelect houses={this.state.houses} onUserInput={this.handleHouseSelected}/>
+        </p>
+        <p>Квартира: 
+          <RoomSelect rooms={this.state.rooms} />
         </p>
         <br/>
         <input type="submit" value="Найти" />
