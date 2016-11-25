@@ -1,5 +1,10 @@
 class FlatsController < ApplicationController
   before_action :set_flat, only: [:show, :edit, :update, :destroy]
+
+  def get_owner
+    owner = Owner.where("room_location_id = ?", params[:room_id])
+    render json: owner[0].to_json
+  end
   
   def get_city_streets
     streets = city_streets(params[:city_id])

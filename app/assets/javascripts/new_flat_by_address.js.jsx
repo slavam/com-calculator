@@ -4,10 +4,7 @@ class RoomSelect extends React.Component{
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(event) {
-    this.setState({room_id: event.target.value});
-    // this.props.onUserInput(event.target.value);
-    // this.props.myOnChange(this.refs.selectCity.value);
-    // alert(event.target.value)
+    this.props.onUserInput(event.target.value);
   }
   render(){
     return <select className = "selectRoom" defaultValue = "1" ref = "selectRoom" onChange = {this.handleChange}>
@@ -27,9 +24,6 @@ class HouseSelect extends React.Component{
   }
   handleChange(event) {
     this.props.onUserInput(event.target.value);
-    // this.setState({house_id: event.target.value});
-    // this.props.myOnChange(this.refs.selectCity.value);
-    // alert(event.target.value)
   }
   render(){
     return <select className = "selectHouse" defaultValue = "1" ref = "selectHouse" onChange = {this.handleChange}>
@@ -48,7 +42,6 @@ class StreetSelect extends React.Component{
     this.handleChange = this.handleChange.bind(this);
   }
   handleChange(event) {
-    // this.setState({street_id: event.target.value});
     this.props.onUserInput(event.target.value);
   }
   render(){
@@ -94,7 +87,22 @@ class NewFlatByAddress extends React.Component{
     this.handleCitySelected = this.handleCitySelected.bind(this);
     this.handleStreetSelected = this.handleStreetSelected.bind(this);
     this.handleHouseSelected = this.handleHouseSelected.bind(this);
+    this.handleRoomSelected = this.handleRoomSelected.bind(this);
   }  
+  handleRoomSelected(room_id){
+    $.ajax({
+      type: 'GET',
+      url: "get_owner?room_id="+room_id
+      }).done(function(data) {
+        // alert(data.full_name)
+        this.setState({
+          owner: data
+        });
+      }.bind(this))
+      .fail(function(jqXhr) {
+        console.log('failed to register');
+      });
+  }
   handleHouseSelected(house_id){
     $.ajax({
       type: 'GET',
@@ -138,7 +146,7 @@ class NewFlatByAddress extends React.Component{
       });
   }
   handleSubmit(event) {
-    alert('Your favorite flavor is: ' + this.state.city_id);
+    alert('Your favorite flavor is: ' + this.state.rooms[0].id);
     event.preventDefault();
   }
   render(){
@@ -154,10 +162,10 @@ class NewFlatByAddress extends React.Component{
           <HouseSelect houses={this.state.houses} onUserInput={this.handleHouseSelected}/>
         </p>
         <p>Квартира: 
-          <RoomSelect rooms={this.state.rooms} />
+          <RoomSelect rooms={this.state.rooms} onUserInput={this.handleRoomSelected}/>
         </p>
         <br/>
-        <input type="submit" value="Найти" />
+        <input type="submit" value="Сохранить" />
       </form>
     );
   }
