@@ -30,16 +30,38 @@ class FlatsController < ApplicationController
   def show
   end
   
-  def new
-    @flat = Flat.new
-  end
-  
   def new_by_address
     @cities = City.joins("INNER JOIN city_types ct ON ct.id = cities.city_type_id").order("cities.name").
       select("cities.id as id, CONCAT(ct.short_name, ' ', cities.name) as name")
     @streets = city_streets(1)
     @houses = street_houses(@streets[0][:id])
     @rooms = house_rooms(@houses[0][:id])
+  end
+  
+  def create_by_address
+    @flat = Flat.where('owner_id = ?', params[:owner_id])
+    redirect_to :flats, notice: 'Данные о жилье по этому адресу уже есть в базе.' if @flat.present?
+    owner = Owner.find(params[:owner_id])
+    if owner.present?
+      @flat = Flat.new
+      @flat.owner_id = owner.id
+      @flat.payer_lastname = owner.full_name
+      @flat.address = owner.code_erc.to_s
+      @flat.total_area = 1
+      if @flat.save
+        redirect_to :flats, notice: 'flat was successfully created.' 
+        # format.json { render :show, status: :created, location: @flat }
+      else
+        render :new 
+        # format.json { render json: @flat.errors, status: :unprocessable_entity }
+      end
+    else
+      redirect_to :flats, notice: 'По указанному адресу нет жилья.' 
+    end
+  end
+
+  def new
+    @flat = Flat.new
   end
   
   def create
@@ -112,7 +134,7 @@ private
         home = h.n_house.to_s + (h.f_house>0 ? '-' + h.f_house.to_s : '') + 
         (h.d_house>0 ? '/'+h.d_house.to_s : '') + 
         ((h.a_house.present? and h.a_house>'') ? '"'+h.a_house+'"' : '')
-        houses << {id: h.hl_id, street_location_id: h.street_location_id, home: home}
+        houses << {id: h.hl_id, street_location_id: h.street_location_id, name: home}
       }
       houses
     end
@@ -127,7 +149,7 @@ private
       RoomLocation.find_by_sql(query).each {|r|
         room = (r.n_room>0 ? r.n_room.to_s : '') +
         ((r.a_room.present? and r.a_room>'') ? '"'+r.a_room+'"' : '')
-        rooms << {id: r.id, house_location_id: r.house_location_id, room: room}
+        rooms << {id: r.id, house_location_id: r.house_location_id, name: room}
       }
       rooms
     end

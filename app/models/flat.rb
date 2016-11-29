@@ -10,8 +10,8 @@ class Flat < ActiveRecord::Base
   end
   
   def payer_shortname
-    self.payer_lastname+' '+(self.payer_firstname>'' ? self.payer_firstname[0,1]+'.'+
-    (self.payer_middlename>'' ? self.payer_middlename[0,1]+'.' : '') : '')
+    self.payer_lastname+' '+((self.payer_firstname.present? and self.payer_firstname>'') ? self.payer_firstname[0,1]+'.'+
+    ((self.payer_middlename.present? and self.payer_middlename>'') ? self.payer_middlename[0,1]+'.' : '') : '')
   end
   
   private

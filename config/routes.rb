@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get 'flats/get_house_rooms', to: 'flats#get_house_rooms'
   get 'flats/get_owner', to: 'flats#get_owner'
   get 'flats/:flat_id/accounts/get_tariff_by_volume', to: 'accounts#get_tariff_by_volume'
+  post 'flats/create_by_address', to: 'flats#create_by_address'
   post 'flats/:flat_id/utilities/new', to: 'utilities#create'
   post 'flats/:flat_id/accounts/new', to: 'accounts#create'
   resources :flats do

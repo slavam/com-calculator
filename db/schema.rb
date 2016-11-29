@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161123074910) do
+ActiveRecord::Schema.define(version: 20161128141735) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,14 @@ ActiveRecord::Schema.define(version: 20161123074910) do
   add_index "counters", ["account_id"], name: "index_counters_on_account_id", using: :btree
   add_index "counters", ["utility_id"], name: "index_counters_on_utility_id", using: :btree
 
+  create_table "erc_accounts", force: :cascade do |t|
+    t.integer "owner_id"
+    t.integer "firm_id"
+    t.string  "bankbook"
+  end
+
+  add_index "erc_accounts", ["owner_id"], name: "index_erc_accounts_on_owner_id", using: :btree
+
   create_table "flats", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "address"
@@ -75,8 +83,12 @@ ActiveRecord::Schema.define(version: 20161123074910) do
     t.integer  "residents_number"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.float    "lat"
+    t.float    "lng"
+    t.integer  "owner_id"
   end
 
+  add_index "flats", ["owner_id"], name: "index_flats_on_owner_id", using: :btree
   add_index "flats", ["user_id"], name: "index_flats_on_user_id", using: :btree
 
   create_table "house_locations", force: :cascade do |t|
@@ -198,6 +210,8 @@ ActiveRecord::Schema.define(version: 20161123074910) do
   add_foreign_key "cities", "city_types"
   add_foreign_key "counters", "accounts"
   add_foreign_key "counters", "utilities"
+  add_foreign_key "erc_accounts", "owners"
+  add_foreign_key "flats", "owners"
   add_foreign_key "flats", "users"
   add_foreign_key "house_locations", "houses"
   add_foreign_key "house_locations", "street_locations"

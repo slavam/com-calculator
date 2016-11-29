@@ -1,3 +1,22 @@
+class AddrSelect extends React.Component{
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+  handleChange(event) {
+    this.props.onUserInput(event.target.value);
+  }
+  render(){
+    return <select className = "selectAddr" defaultValue = "1" onChange = {this.handleChange}>
+      {
+        this.props.data.map(function(elmnt) {
+          return <option key = {elmnt.id} value = {elmnt.id}> {elmnt.name} </option>;
+        }
+      )}
+    </select>;
+  }
+}
+
 class RoomSelect extends React.Component{
   constructor(props) {
     super(props);
@@ -10,7 +29,7 @@ class RoomSelect extends React.Component{
     return <select className = "selectRoom" defaultValue = "1" ref = "selectRoom" onChange = {this.handleChange}>
       {
         this.props.rooms.map(function(room) {
-          return <option key = {room.id} value = {room.id}> {room.room} </option>;
+          return <option key = {room.id} value = {room.id}> {room.name} </option>;
         }
       )}
     </select>;
@@ -29,7 +48,7 @@ class HouseSelect extends React.Component{
     return <select className = "selectHouse" defaultValue = "1" ref = "selectHouse" onChange = {this.handleChange}>
       {
         this.props.houses.map(function(house) {
-          return <option key = {house.id} value = {house.id}> {house.home} </option>;
+          return <option key = {house.id} value = {house.id}> {house.name} </option>;
         }
       )}
     </select>;
@@ -146,8 +165,17 @@ class NewFlatByAddress extends React.Component{
       });
   }
   handleSubmit(event) {
-    alert('Your favorite flavor is: ' + this.state.rooms[0].id);
+    // alert('Your favorite flavor is: ' + this.state.owner.id);
     event.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: "create_by_address?owner_id="+this.state.owner.id
+      }).done(function() {
+        null;
+      }) //.bind(this))
+      .fail(function(jqXhr) {
+        console.log('failed to register');
+      });
   }
   render(){
     return (
